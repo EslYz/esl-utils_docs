@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../dist/esl-utils.js"></script>
+</head>
+<body>
+    <script>
+        var m = 11
+        function f(a, b) {
+            return a+b+this.m
+        }
+        const obj = {m: 22}
+
+        console.log(eUtils)
+        //测试自定义 call
+        // console.log(eUtils.call(f,null, 10,20))
+        // console.log(eUtils.call(f, obj, 10, 20))
+
+        // 测试apply
+        // console.log(eUtils.apply(f,obj, [10,20]))
+        // console.log(eUtils.apply(f, null, [10, 20]))
+
+        // 测试bind
+        let f1 = eUtils.bind(f, obj)
+        console.log(f1(10,20))
+
+        let f2 = eUtils.bind(f, obj, 1, 2)
+        console.log(f2(10,20))
+
+        console.log(eUtils.bind(f,null, 1,2)())
+        console.log(eUtils.bind(f,null, 1,2)(20,10))
+
+
+
+    </script>
+</body>
+</html>

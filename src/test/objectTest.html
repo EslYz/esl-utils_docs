@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../dist/esl-utils.js"></script>
+</head>
+<body>
+    <script>
+        // function Person(name,age) {
+        //     this.name = name
+        //     this.age = age
+        // }
+        // // let obj = eUtils.newInstance(Person, '张三', 18)
+        //
+        // let p = new Person();
+        // console.log(p)
+        // console.log(typeof p)
+        // console.log(p instanceof Object)
+        // console.log(eUtils.insOf(Person, Function))
+
+        // const o1 = {
+        //     a: [{x: 2}, {Y: 4}],
+        //     b: 1
+        // }
+        // const o2 = {
+        //     a: {z: 3},
+        //     b: [2, 3],
+        //     c: 'foo'
+        // }
+        // console.log(eUtils.mergeObject(o1, o2))
+
+        // const obj = { x: 'abc', y: {m: 1} }
+        // const obj = [1,2,3,4]
+        // const r = eUtils.clone2(obj)
+        // console.log(r)
+        // r.y.m=2
+
+        // const obj = {
+        //     a: 1,
+        //     b: ['e', 'f', 'g'],
+        //     c: { h: 20 },
+        //     d: function(){}
+        // }
+        // obj.b.push(obj.c)
+        // obj.c.j=obj.b
+        // console.log(obj)
+        // const r = eUtils.deepClone1(obj)
+        // console.log(obj)
+        // console.log(r)
+        // r.b[0] = 'a'
+        // console.log(obj === r)
+        const obj = {
+            a: 1,
+            b: ['e', 'f', 'g'],
+            c: { h: 20 },
+            d: function(){}
+        }
+        obj.b.push(obj.c)
+        obj.c.j=obj.b
+        const r = eUtils.deepClone(obj)
+        console.log(r)
+        r.c.h=2000
+        console.log(obj)
+    </script>
+</body>
+</html>

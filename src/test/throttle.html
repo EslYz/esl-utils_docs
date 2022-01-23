@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>节流与防抖测试</title>
+</head>
+<body>
+    <button id="btn">test click</button>
+    <input id="input">
+    <script src="../../dist/esl-utils.js"></script>
+    <script>
+        // window.addEventListener('scroll', function (){
+        //     console.log(Date.now())
+        // })
+        // console.log(eUtils)
+        // document.getElementById('btn').onclick = eUtils.throttle(function (e) {
+        //     console.log(Date.now(), e)
+        // }, 1500)
+        document.getElementById('input').onkeydown =
+            eUtils.debounce(function (e) {
+                console.log(e.keyCode)
+            }, 800)
+    </script>
+</body>
+</html>

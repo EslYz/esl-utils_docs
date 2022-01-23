@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../dist/esl-utils.js"></script>
+</head>
+<body>
+    <script>
+        let { PubSub } = eUtils
+        console.log(PubSub)
+        let token = PubSub.subscribe('pay', (data) => {
+            console.log(data, '商家接到了订单，准备开始制作')
+        })
+        let pid = PubSub.subscribe('pay', (data) => {
+            console.log(data ,'骑手接到了订单，准备开始取餐')
+        })
+        PubSub.subscribe('cancel', (data) => {
+            console.log(data ,'取消订单')
+        })
+        // PubSub.unsubscribe('pay')
+        PubSub.unsubscribe(pid)
+        PubSub.publish('pay', {
+            title: '鱿鱼饭',
+            price: 20,
+            pos: '202号桌'
+        })
+    </script>
+</body>
+</html>

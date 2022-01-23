@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <script src="../../dist/esl-utils.js"></script>
+    <script>
+        let arr = [0,1,2,3,4,5]
+        // const result = eUtils.map(arr, (item, index) =>{
+        //     return item * 10
+        // })
+        // console.log(result)
+
+        // let result = arr.reduce(function(result,value){
+        //     return result+value
+        // }, 0)
+        // console.log(eUtils)
+        // let result = eUtils.reduce(arr, function(res, value){
+        //     return res + value
+        // }, 0)
+        // console.log(result)
+
+        // const result = arr.filter(item => item %2 ===1)
+        // console.log(result)
+
+        // console.log(eUtils.filter(arr, (item, index) => {
+        //     console.error(index)
+        //     return item%2===1
+        // }))
+
+        // const result = eUtils.find(arr, (item, index) => {
+        //     return item === 2000
+        // })
+
+        // const result = eUtils.findIndex(arr, (item, index) => {
+        //     return item === 2
+        // })
+
+        // const result = eUtils.every(arr, (item, index) => {
+        //     return item > -1
+        // })
+        // arr = [2,3,3,4,5,6,1,2,2,3]
+        // const result = eUtils.unique(arr)
+
+        // const result = eUtils.concat(arr,[199,200], 's', 'l')
+
+        let result;
+        // console.log(arr.slice(-2, 10))
+        // result = eUtils.slice(arr, -2, 10)
+
+        // arr = [2,3,3,4,5,[1,9,[20,21],10]]
+        // result = eUtils.flatten(arr)
+        //
+        // result = eUtils.chunk(result, 4)
+
+        // result = eUtils.difference([1,3,5,7], [5,8])
+        // result =
+        //     eUtils.pullAll([1,3,4,3,7], [2,7,3,4])
+        result =
+            eUtils.dropRight([1,3,4,3,7], 3)
+        console.log(result)
+    </script>
+</body>
+</html>

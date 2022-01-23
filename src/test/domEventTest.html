@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../dist/esl-utils.js"></script>
+</head>
+<body>
+    <style>
+        *{
+            border-radius: 50%;
+        }
+        .out{
+            margin:  auto;
+            width: 200px;
+            height: 200px;
+            background-color: deeppink;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .inner{
+            margin: auto;
+            width: 100px;
+            height: 100px;
+            background-color: deepskyblue;
+
+            /*transform: translate(-50%, -50%);*/
+        }
+    </style>
+<!--    <div class="out">-->
+<!--        <div class="inner"></div>-->
+<!--    </div>-->
+
+    <ul id="items">
+        <li>AAAA</li>
+        <li>BBBB</li>
+        <li>CCCC</li>
+        <li>DDDD</li>
+        <div>EEEE</div>
+    </ul>
+    <script>
+        // let out = document.getElementsByClassName('out')[0]
+        // let inner = document.getElementsByClassName('inner')[0]
+        // out.addEventListener('click', function (e) {
+        //     console.log('捕获 outer')
+        //     e.preventDefault()
+        // }, true)
+        //
+        // inner.addEventListener('click', function (e) {
+        //     console.log('捕获 inner')
+        // }, true)
+        //
+        // out.addEventListener('click', function (e) {
+        //     console.log('冒泡 outer')
+        // })
+        // inner.addEventListener('click', function (e) {
+        //     console.log('冒泡 inner')
+        //     e.preventDefault()
+        // })
+
+
+        eUtils.addEventListener('#items','click', function(e) {
+            console.log(this.innerHTML)
+        }, 'li')
+
+
+    </script>
+</body>
+</html>

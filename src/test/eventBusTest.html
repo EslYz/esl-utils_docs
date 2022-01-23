@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../../dist/esl-utils.js"></script>
+</head>
+<body>
+    <script>
+        let bus = eUtils.eventBus
+
+        bus.on('login', data => {
+            console.log(data + '用户已经登录')
+        })
+        bus.on('login', data => {
+            console.log(data + '登录数据已经写入')
+        })
+
+        bus.on('logout', data => {
+            console.log(data + '退出登录被调用')
+        })
+        //
+        setTimeout(() => {
+            console.log('即将触发登录事件')
+            bus.emit('login', '法外狂徒张三')
+        }, 2000)
+
+        setTimeout(() => {
+            console.log('logout 出发了')
+            bus.emit('logout', '法外狂徒已下线')
+        }, 2500)
+
+        bus.off()
+        console.log(bus)
+
+    </script>
+</body>
+</html>

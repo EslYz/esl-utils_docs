@@ -50,7 +50,7 @@ module.exports = {
                     'algorithm/递归',
                     'algorithm/sort/排序',
                     // 动态规划
-                    'algorithm/dynamicProgramming/dp01'
+                    'algorithm/dynamicProgramming/dp01.md'
                 ]
             },
             {

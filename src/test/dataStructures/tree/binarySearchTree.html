@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>二叉搜索树</title>
+</head>
+<body>
+<script>
+    class Node {
+        constructor(val) {
+            this.val = val
+            this.parent = null
+            this.left = null
+            this.right = null
+        }
+
+        add (node) {
+            if (node.val < this.val) {
+                if (this.left === null) {
+                    node.parent = this
+                    this.left = node
+                } else {
+                    this.left.add(node)
+                }
+            } else { // 大于等于的往右放，之后查找也是这种逻辑，小于往左查，大于等于往右查
+                if (this.right === null) {
+                    node.parent = this
+                    this.right = node
+                } else {
+                    this.right.add(node)
+                }
+            }
+        }
+
+        /**
+         * 查找 val的parent节点
+         * @param val
+         */
+        searchParent(val) {
+            // 当前节点就是 val的父节点
+            if ((this.left !== null && this.left.val === val)
+                || (this.right !== null && this.right.val === val)) {
+                return this
+            } else {
+                // 查找的值小于当前节点的值
+                // 并且当前节点的左子节点不为空
+                if (val < this.val && this.left !== null) {
+                    return this.left.searchParent(val) // 向左子节点递归
+                } else if (val >= this.val && this.right !== null) {
+                    return this.right.searchParent(val)
+                } else {
+                    return null
+                }
+            }
+        }
+        search(val) {
+            if (val === this.val) {
+                return this
+            } else if (val < this.val) {
+                if (this.left === null) {
+                    // 没有结果
+                    return null
+                }
+                return this.left.search(val)
+            } else {
+                if (this.right === null) {
+                    return null
+                }
+                return this.right.search(val)
+            }
+        }
+        del(val) {
+            if (this.val === val) {
+                if (this.left === null && this.right === null) {
+                    if (this.parent !== null) {
+                        if (this.parent.left === this) this.parent.left = null
+                        if (this.parent.right === this) this.parent.right = null
+                    }
+                } else if (this.left === null && this.right !== null) {
+                    if (this.parent.left === this) {
+                        this.parent.left = this.right
+                    }
+                    if (this.parent.right === this) {
+                        this.parent.right = this.right
+                    }
+                } else if (this.right === null && this.left !== null) {
+                    if (this.parent.right === this) {
+                        this.parent.right = this.left
+                    }
+                    if (this.parent.left === this) {
+                        this.parent.left = this.left
+                    }
+                } else {
+                    // 找后继，右边最小的节点
+                    // 或者找前驱，左边最大的节点
+                    let node = this.left
+                    while (node.right) {
+                        node = node.right
+                    }
+                    this.del(node.val)
+                    this.val = node.val
+                }
+            } else if (this.val < val) {
+                if (this.right !== null){
+                    this.right.del(val)
+                }
+            } else {
+                if (this.left !== null) {
+                    this.left.del(val)
+                }
+            }
+        }
+        infixOrder() {
+            if (this.left !== null) {
+                this.left.infixOrder()
+            }
+            console.log(this)
+            if (this.right !== null) {
+                this.right.infixOrder()
+            }
+        }
+
+    }
+    class BinarySearchTree{
+        constructor(arr) {
+            this.root = new Node(arr[0])
+            for (let i = 1; i < arr.length; i++) {
+                this.root.add(new Node(arr[i]))
+            }
+        }
+        add(node){
+            if (this.root === null) {
+                this.root = node
+            } else {
+                this.root.add(node)
+            }
+        }
+        infixOrder() {
+            this.root.infixOrder()
+        }
+        search(val) {
+            if (this.root === null) {
+                return null
+            }
+            return this.root.search(val)
+        }
+        searchParent(val) {
+            if (this.root === null) {
+                return null
+            }
+            return this.root.searchParent(val)
+        }
+        delNode(val) {
+            if (this.root === null) return
+            // 要删除的节点
+            let target = this.search(val)
+            if (target === null) return
+            // 树只有一个节点
+            if (this.root.left === null && this.root.right === null && this.root.val === val) {
+                this.root = null
+                return;
+            }
+            // 要删除节点的父节点
+            let parent = this.searchParent(val)
+            // 叶子节点
+            if (target.left === null && target.right === null) {
+                // 删除叶子节点
+                if (parent.left === target && parent.left.val === val) {
+                    parent.left = null
+                    return;
+                }
+                if (parent.right === target && parent.right.val === val) {
+                    parent.right = null
+                }
+            } else if (target.left !== null && target.right !== null) { //处理右两个子树的节点
+                //
+                let t = target.left
+                while (t.right) {
+                    t = t.right
+                }
+                this.delNode(t.val)
+                target.val = t.val
+            } else { // 删除只有一颗子树的节点
+                // 如果要删除的节点的左子节点
+                if (target.left !== null) {
+                    // 如果 target 是父节点的左子节点
+                    if (parent.left === target && parent.left.val === val) {
+                        parent.left = target.left
+                    } else {
+                        parent.right = target.left
+                    }
+                } else {
+                    // 只有 右子节点
+                    if (parent.left === target && parent.left.val === val) {
+                        parent.left = target.right
+                    } else {
+                        parent.right = target.right
+                    }
+                }
+            }
+        }
+        del(val) {
+            this.root.del(val)
+        }
+    }
+
+    let arr = [79, 15, 80, 16, 78, 14, 233, 87, 6, 228]
+    let tree = new BinarySearchTree(arr)
+
+    tree.infixOrder()
+    console.log('******')
+    tree.delNode(79)
+
+    tree.infixOrder()
+
+</script>
+</body>
+</html>

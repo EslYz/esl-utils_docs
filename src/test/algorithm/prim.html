@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>普利姆算法|最小生成树</title>
+</head>
+<body>
+<script>
+    // 创建最小生成树-->村庄的图
+    class MiniTree{
+        constructor() {
+            // 创建图的邻接矩阵
+        }
+        /**
+         * @param graph 图对象
+         * @param vertexes 图对应顶点的个数
+         * @param data 图的各个顶点的值
+         * @param weight 图的邻接矩阵
+         */
+        createGraph(graph, vertexes, data, weight) {
+            let i, j
+            for (i = 0; i < vertexes; i++) { // 遍历顶点
+                graph.data[i] = data[i]
+                for (j = 0; j < vertexes; j++) {
+                    graph.weight[i][j] = weight[i][j]
+                }
+            }
+        }
+        // 生成最小生成树
+        /**
+         *
+         * @param graph 图
+         * @param v 从图的第几个顶点开始生成 'A' -> 0, 'B' -> 1
+         */
+        prim(graph, v) {
+            //
+            let vertexes = graph.vertexes
+            let visited = [] // 标记顶点是否被访问过，0 是没被访问
+            for (let i = 0; i < vertexes; i++) {
+                visited[i] = 0
+            }
+            // 当前节点标记为已访问
+            visited[v] = 1
+            // h1 和 h2 记录两个顶点的坐标
+            let h1 = -1
+            let h2 = -1
+            let minWeight = 10000
+            let res = []
+            for (let k = 1; k < vertexes; k++) { // 需要节点数 - 1 条路径
+                // 确定每一次生成的子图，和哪个节点的距离最近
+                for (let i = 0; i < vertexes; i++) { // 遍历已经访问过的节点
+                    for (let j = 0; j < vertexes; j++) { // 遍历未访问过的节点
+                        // 如果i 节点已经被访问，且 j节点没有被访问，
+                        // 且 i-j 的路径 <  minWeight
+                        // 更新 minWeight 为 i -> j 的路径， 同时记录 最短路径的最表
+                        if (visited[i] === 1 && visited[j] === 0
+                            && graph.weight[i][j] < minWeight) {
+                            minWeight = graph.weight[i][j]
+                            h1 = i
+                            h2 = j
+                        }
+                    }
+                }
+                // 找到一最小的条边
+                res.push(graph.weight[h1][h2])
+                console.log(`边<${graph.data[h1]}, ${graph.data[h2]}>权值：${minWeight}`)
+                visited[h1] = 1
+                visited[h2] = 1
+                minWeight = 10000
+            }
+            let count = 0
+            for(let weight of res) {
+                count += weight
+            }
+            console.log(count)
+        }
+        // 显示图的邻接矩阵
+        showGraph(graph) {
+            console.log(graph.weight)
+        }
+    }
+    class MGraph{
+        constructor(vertexes) {
+            this.vertexes = vertexes // 表述图的节点个数
+            this.data = [] // 表示节点的数据
+            this.weight = [] //存放边，就是邻接矩阵
+
+            for (let i = 0; i < vertexes; i++) {
+                this.weight[i] = []
+                for (let j = 0; j < vertexes; j++) {
+                    this.weight[i][j] = 0
+                }
+            }
+        }
+    }
+
+
+    let data = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+    let vertexes = data.length
+    let weight = []
+    // 邻接矩阵的关系使用二维数组
+    // 10000 表示不连通
+    weight[0] = [10000, 5, 7,10000,10000,10000,2]
+    weight[1] = [5,10000, 10000, 9, 10000, 10000, 3]
+    weight[2] = [7,10000,10000,10000,8,10000,10000]
+    weight[3] = [10000, 9, 10000, 10000, 10000, 4, 10000]
+    weight[4] = [10000,10000,8,10000,10000,5,4]
+    weight[5] = [10000,10000,10000,4,5,10000,6]
+    weight[6] = [2,3,10000,10000,4,6,10000]
+
+    let graph = new MGraph(vertexes)
+    let miniTree = new MiniTree()
+    miniTree.createGraph(graph, vertexes, data, weight)
+    miniTree.showGraph(graph)
+    miniTree.prim(graph, 1)
+</script>
+</body>
+</html>

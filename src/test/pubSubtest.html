@@ -3,11 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <script src="../../dist/esl-utils.js"></script>
+<!--    <script src="../../dist/esl-utils.js"></script>-->
 </head>
 <body>
     <script>
-        let { PubSub } = eUtils
+        // let { PubSub } = eUtils
+        let PubSub = {
+            id: 1,
+            _callbacks: []
+        }
+        PubSub.subscribe = function (channel, callback) {
+            let token = 'pub_sub_token_' + this.id++
+            if (this._callbacks[channel]) {
+                this._callbacks[channel][token] = callback
+            } else {
+                this._callbacks[channel] = {
+                    token: callback
+                }
+            }
+            return token
+        }
+        PubSub.unsubscribe = function (flag) {
+            if (!flag) this._callbacks = {}
+            else {
+                if (flag.indexOf('pub_sub_token_') === 0) {
+                    let obj = Object.values(this._callbacks).find((callbackObj) => callbackObj.hasOwnProperty(flag))
+                    if (obj) {
+                        delete obj[flag]
+                    }
+                } else {
+                    delete this._callbacks[flag]
+                }
+            }
+        }
+        PubSub.publish = function (channel, data) {
+            if (this._callbacks[channel]) {
+               Object.values(this._callbacks[channel]).forEach(callback => {
+                   callback(data)
+               })
+            }
+        }
         console.log(PubSub)
         let token = PubSub.subscribe('pay', (data) => {
             console.log(data, '商家接到了订单，准备开始制作')

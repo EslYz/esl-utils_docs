@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    let arr = [1,2,3,5,6,9]
+    function binarySearch(arr, left, right, val) {
+        if (left > right) return -1
+        let mid = Math.floor((left+right) / 2)
+        let midVal = arr[mid]
+        if (midVal === val) {
+            return mid
+        } else if (midVal < val) {
+            return binarySearch(arr, mid + 1, right, val)
+        } else if (midVal > val) {
+            return binarySearch(arr, left, mid-1, val)
+        }
+    }
+    let index =binarySearch(arr, 0, arr.length - 1, 7)
+    console.log(index)
+
+    function binarySearch2(arr, left, right, val) {
+        if (left > right) return []
+        let mid = Math.floor((left+right) / 2)
+        let midVal = arr[mid]
+        if (midVal === val) {
+            let temp = mid-1
+            let res = []
+            while (true) {
+                if (temp < 0 || arr[temp] !== val) break
+                res.push(temp--)
+            }
+            res.push(mid)
+            temp = mid+1
+            while (true) {
+                if (temp > arr.length - 1 || arr[temp] !== val) break
+                res.push(temp++)
+            }
+            // return mid
+            return res
+        } else if (midVal < val) {
+            return binarySearch2(arr, mid + 1, right, val)
+        } else if (midVal > val) {
+            return binarySearch2(arr, left, mid-1, val)
+        }
+    }
+    let indexList = binarySearch2(arr,0,arr.length-1, 7)
+    console.log(indexList)
+
+    /**
+     * key 是要查找的val
+     * mid = low + ((key - a[low]) / (a[high] - a[low])) * (high - low)
+     */
+    // arr = []
+    // for (let i = 1; i <= 100; i++) {
+    //     arr.push(i * 2)
+    // }
+    // for (let i = 1; i <= 100; i++) {
+    //     arr.push(i * 3)
+    // }
+    /**
+     * 差值查找
+     * @param arr
+     * @param left
+     * @param right
+     * @param findVal
+     * @returns {number}
+     */
+    let count = 0
+    console.log(arr)
+    function insertValueSearch(arr, left, right, findVal) {
+        // findVal < arr[0] || findVal > arr[arr.length-1] 必须要有，否则mid可能越界
+        count++
+       if (left > right || findVal < arr[0] || findVal > arr[arr.length-1]) return -1
+        let mid = left + parseInt( ((findVal - arr[left]) / (arr[right] - arr[left]) )* (right - left))
+        let midVal = arr[mid]
+        if (midVal === findVal) {
+            return mid
+        } else if (midVal > findVal) {
+            return insertValueSearch(arr, left, mid-1, findVal)
+        } else if (midVal < findVal) {
+            return insertValueSearch(arr, mid + 1, right, findVal)
+        }
+    }
+    // console.log(insertValueSearch(arr, 0, arr.length-1, 98))
+    // console.log('查找了' + count + '次')
+    /************************************************************************/
+    let maxSize = 20
+     // mid = low + f(k-1)-1
+    // 构造fib 数组
+    function fib() {
+        let f = []
+        f[0] = 1
+        f[1] = 1
+        for (let i = 2; i < maxSize; i++) {
+            f[i] = f[i-1] + f[i-2]
+        }
+        return f
+    }
+
+    /**
+     * 非递归方式
+     * mid = low + f(k-1)-1
+     * @param arr
+     * @param findVal
+     * @returns {number}
+     */
+    function fibSearch(arr, findVal) {
+        let low = 0
+        let high = arr.length - 1
+        let k = 0 // 表示斐波那契分割数值的下标
+        let mid = 0
+        let f = fib()
+        // 获取分割数据的下标
+        while (high > f[k] - 1) {
+            k++
+        }
+        // f[k] 值 可能大于数组的长度，需要 构造新数组，并指向 arr[]
+        let temp = [].concat(arr)
+        if (arr.length < f[k]) {
+            let len = f[k] - arr.length
+            for (let i = 0; i < len; i++) {
+                temp.push(arr[high])
+            }
+        }
+        // console.log(temp)
+        while (low <= high) {
+            mid = low + f[k - 1] - 1
+            if (findVal < temp[mid]) {
+                // 向数组的左边查找
+                high = mid - 1
+                // 全部元素 = 前面的元素 + 后面的元素
+                // f[k] = f[k-1] + f[k-2]
+                // 前面有f[k-1]个元素,所以可继续拆分 f[k-1] = f[k-2] + f[k-3]
+                // 即 在 f[k-1]的前面继续查找 k--
+                // 即下次循环  mid = f[k-1-1] -1
+                k--
+            } else if (findVal > temp[mid]) {
+                // 向右查找
+                low = mid + 1
+                // f[k] = f[k-1] + f[k-2]
+                // f[k-2] = f[k-3]+f[k-4]
+                // 下次循环 mid = f[k-1-2]-1
+                k -= 2
+            } else {
+                if (mid <= high) return mid
+                else return high
+            }
+        }
+        return -1
+    }
+    console.log(arr)
+    console.log(fibSearch(arr, 5))
+
+</script>
+</body>
+</html>

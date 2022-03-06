@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <script>
+        // 环形队列测试
+        /**
+         * 预留了最后一个空间
+         * @param max
+         * @constructor
+         */
+        function CircleArray(max) {
+            this.maxSize = max + 1
+            this.front = 0 // 可读取的index
+            this.rear = 0 // 可插入的index
+            this.arr = []
+
+        }
+        CircleArray.prototype.isFull = function () {
+            return (this.rear + 1) % this.maxSize === this.front
+        }
+
+        CircleArray.prototype.isEmpty = function () {
+            return this.rear === this.front
+        }
+
+        /**
+         * 可以换成别的数据结构,优化下，增加一个标志，表示当前node节点是可读还是可写==
+         * {
+         *   value: num,
+         *   flag: 'read or write'
+         * }
+         * @param num
+         */
+        CircleArray.prototype.enqueue = function (num) {
+            if (this.isFull()) {
+                // 队列满，不允许添加
+                console.log('队列满了')
+                return
+            }
+            this.arr[this.rear] = num
+            // rear 后移，考虑取模
+            this.rear = (this.rear + 1) % this.maxSize
+        }
+        CircleArray.prototype.dequeue = function () {
+            if (this.isEmpty()) {
+                // 队列空
+                console.log('队列为空')
+                return
+            }
+            // 这里需要分析出 front 是指向队列的第一个元素
+            // 1. 先把front的对应的值保存到临时变量中
+            // 2. 将front 后移，考虑取模
+            // 3. 返回front
+            let temp = this.arr[this.front]
+            this.front = (this.front + 1) % this.maxSize
+            return temp
+        }
+        CircleArray.prototype.showQueue = function () {
+            if (this.isEmpty()) {
+                console.log('队列为空')
+                return
+            }
+            // 从front 开始遍历，遍历 所有有效的数据
+            /**
+             * 添加的时候，如果尾巴走到头，会取模回到前面，如果继续走会出现头尾相等，这时队列就满了，不能继续添加
+             * 获取的时候，如果front走到头了，也会取模回到前面，继续走会出现头尾相等，就是取完数据了，队列为空
+             */
+            for (let i = this.front; i < this.front + this.validSize(); i++) {
+                console.log(this.arr[i % this.maxSize])
+            }
+
+        }
+        CircleArray.prototype.showHead = function () {
+            if (this.isEmpty()) {
+                console.log('队列为空')
+                return
+            }
+            return this.arr[this.front]
+        }
+        // 返回当前有效数据的个数
+        CircleArray.prototype.validSize = function () {
+            return (this.rear + this.maxSize - this.front) % this.maxSize
+        }
+
+        let circleArray = new CircleArray(5)
+        circleArray.enqueue(1)
+        circleArray.enqueue(2)
+        circleArray.enqueue(3)
+        circleArray.enqueue(4)
+        circleArray.enqueue(5)
+        // circleArray.enqueue(6)
+        console.log(circleArray.dequeue())
+        console.log(circleArray)
+
+
+
+    </script>
+</body>
+</html>

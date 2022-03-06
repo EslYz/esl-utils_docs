@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>递归</title>
+</head>
+<body>
+<script>
+    let map = []
+    let row = 8
+    let col = 7
+    // 1 表示墙
+    // 用墙围住 内部的空间
+    for (let i = 0; i < row; i++) {
+        map[i] = []
+        for (let j = 0; j < col; j++) {
+            if (i === 0 || i === row - 1) {
+                // 上下全部置位 1
+                map[i][j] = 1
+            } else if (j === 0 || j === col - 1) {
+                map[i][j] = 1
+            } else {
+                map[i][j] = 0
+            }
+        }
+    }
+    // 设置挡板 也用1表示
+    map[3][1] = 1
+    map[3][2] = 1
+    // map[1][2] = 1
+    // map[2][2] = 1
+
+    console.log(map)
+
+    /**
+     * [i][j] 表示开始坐标
+     * 如果能走到 map[6][5],则说明能找到
+     * 约定： map[i][j] 为0时表示没有走过，1是墙不能走，  2 表示可以走，  3表示已探测，但是走不通
+     *
+     * 策略：下 -> 右 -> 上 -> 左 ，走不通再回溯
+     *
+     * @param map 地图
+     * @param i 从哪开始找
+     * @param j
+     * 能通过 返回true，否则返回false
+     */
+    function setWay(map, i, j) {
+        // 右下角为终点，如果为2 表示已经走到了终点
+        if (map[row-2][col-2] === 2) {
+            return true
+        } else {
+            if (map[i][j] === 0) {// 当前点还没走过
+                map[i][j] = 2 // 假设当前节点 是能走通的
+                if (setWay(map, i + 1, j)) { // 向下走
+                    return true
+                } else if (setWay(map,i,  j + 1)) { //向右走
+                    return true
+                } else if (setWay(map, i - 1, j)) { // 向上走
+                    return true
+                } else if (setWay(map, i, j - 1)) { // 向左走
+                    return true
+                } else {
+                    map[i][j] = 3
+                    return false
+                }
+            } else {
+                return false
+            }
+        }
+    }
+
+    // 修改策略： 上 右 下 左
+    function setWay2(map, i, j) {
+        // 右下角为终点，如果为2 表示已经走到了终点
+        if (map[row-2][col-2] === 2) {
+            return true
+        } else {
+            if (map[i][j] === 0) {// 当前点还没走过
+                map[i][j] = 2 // 假设当前节点 是能走通的
+                if (setWay2(map, i - 1, j)) { // 向上走
+                    return true
+                } else if (setWay2(map,i,  j + 1)) { //向右走
+                    return true
+                } else if (setWay2(map, i + 1, j)) { // 向下走
+                    return true
+                } else if (setWay2(map, i, j - 1)) { // 向左走
+                    return true
+                } else {
+                    map[i][j] = 3
+                    return false
+                }
+            } else {
+                return false
+            }
+        }
+    }
+
+    // setWay2(map, 1, 1)
+
+
+    //***************八皇后问题*****************
+    let max = 8
+    let resultCount = 0
+    let judgeCount = 0
+    /**
+     * 一维数组
+     * 数组下标表示行，值表示列
+     * @type {*[]}
+     */
+    let array = []
+    let res = []
+    let ans = []
+    for (let i = 0; i < max; i++) {
+        res[i] = []
+        for (let j = 0; j < max; j++) {
+            res[i][j] = '.'
+        }
+    }
+    // 每一次递归时，进入check方法，都会有一个for 循环max次
+    // 放置第n个皇后
+    function check(res, n) {
+        if (n === max) { // n = 8 其实8个皇后已经放好了
+            // console.log(array)
+            resultCount++
+            ans.push(res)
+            return
+        }
+        // 依次放入皇后，并判断是否冲突
+        for (let i = 0; i < max; i++) {
+            // 先把当前皇后，放到改行的第一列
+            array[n] = i
+            // 判断当放置第 n 个皇后到i 时，是否冲突
+
+            if (judge(n)) {
+                res[n][i] = 'Q'
+                // 如果不冲突，接着放 下一个皇后
+                check(res,n+1)
+                res[n][i] = '.'
+            }
+            // 如果冲突，进行下一次循环， 放当前一行，第二列
+        }
+    }
+
+    // 判断是否冲突的方法
+    // 当放置 第N个皇后，就去检测 该皇后是否和前面已经摆放的皇后冲突
+    // n 表示放第n个皇后
+    function judge(n) {
+        judgeCount++
+        for (let i = 0; i < n; i++) {
+            // array[i] === array[n] 在同一列
+            // Math.abs(n - i) === Math.abs(array[n] - array[i]) 第N个皇后是否在同一斜线 k=(y1-y2)/(x1-x2)  利用斜率判断
+            // 1. n = 1, 此时 arr=[0, 1]
+            // (arr[0] !== arr[1])  (1-0) === arr[1] - arr[0]
+            if (array[i] === array[n] || Math.abs(n - i) === Math.abs(array[n] - array[i])) {
+                return false
+            }
+        }
+        return true
+    }
+
+    check(res, 0)
+    console.log(ans)
+    // console.log(res)
+    console.log('一共有' + resultCount + '种解法')
+    console.log(`判断冲突的次数=${judgeCount}`)
+</script>
+</body>
+</html>

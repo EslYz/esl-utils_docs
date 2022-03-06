@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #wrapper{
+            overflow: hidden;
+            display: flex;
+            flex-direction: row;
+        }
+        #box1 {
+            width: 200px;
+            background-color: red;
+            padding-bottom: 9999px;
+            margin-bottom: -9999px;
+        }
+        #box2{
+            width: 200px;
+            background-color: deepskyblue;
+            padding-bottom: 9999px;
+            margin-bottom: -9999px;
+        }
+    </style>
+</head>
+<body>
+<div id="wrapper">
+    <div id="box1"></div>
+    <div id="box2"></div>
+
+    <button id="btn">click me!</button>
+</div>
+
+<script>
+    //#region
+    // 链式调用中，只有前一个then 的回调执行完毕后，跟着的then中的回调才会被加入至微任务队列
+    // 每个链式调用的开端会首先依次进入微任务队列
+    // 同一个promise的每个链式调用的开端会首先依次进入微任务队列
+    // let p = Promise.resolve().then(() => {
+    //     console.log('then 0')
+    //     Promise.resolve().then(() => {
+    //         console.log('then 0 - 1')
+    //     }).then(() => {
+    //         console.log('then 0 - 2')
+    //     })
+    // }).then(() => {
+    //     console.log('then 0 - 3')
+    // })
+    //
+    // class Queue {
+    //     constructor() {
+    //         this.promise = Promise.resolve()
+    //     }
+    //     execute(promise) {
+    //         this.promise = this.promise.then(() => promise)
+    //         return this.promise
+    //     }
+    // }
+    // const queue = new Queue()
+    // const delay = (params) => {
+    //     const  time = Math.floor(Math.random() * 5)
+    //     return new Promise((resolve) => {
+    //         setTimeout(() => {
+    //             resolve(params)
+    //         }, time * 500)
+    //     })
+    // }
+    // const handleClick = async(name) => {
+    //     const res = queue.execute(delay(name))
+    //     console.log(res)
+    // }
+    // Promise.all([
+    //     delay('A'),
+    //     delay('B'),
+    //     delay('C'),
+    //     delay('A'),
+    //     delay('B'),
+    //     delay('C')
+    // ]).then(data => {
+    //     console.log(data)
+    // })
+    //
+    // handleClick('A')
+    // handleClick('B')
+    // handleClick('C')
+    // handleClick('A')
+    // handleClick('B')
+    // handleClick('C')
+    //
+    // p.then(() => {
+    //     console.log('then 1')
+    //     Promise.resolve().then(() => {
+    //         console.log('then 1 - 1')
+    //     })
+    // })
+    // p.then(() => {
+    //     console.log('then 2')
+    // })
+    // p.then(() => {
+    //     console.log('then 3')
+    // })
+    //
+    // var a = 0
+    // var b = async () => {
+    //     console.log(a) // 0
+    //     a = a + await 10
+    //     console.log('2', a) // -> ？2 10
+    // }
+    // b()
+    // a++
+    // console.log('1', a) // -> 1 1
+    // #endregion
+
+    let btn = document.querySelector('#btn')
+    let count = 1
+
+    /**
+     * wait时间内多次点击不执行，超过wait时间才会执行
+     * @param func
+     * @param wait
+     * @param immediate true表示点击时立即执行，之后的不执行，即 只有第一次点击有效
+     */
+    function debounce(func, wait, immediate) {
+        let timer = null
+        let context, args
+        let later = () => setTimeout(() => {
+            clearTimeout(timer)
+            timer = null
+            if (!immediate) {
+                func.apply(context, args)
+                context = args = null
+            }
+        }, wait)
+        return function (...params) {
+            if (timer) {
+                clearTimeout(timer)
+                timer = later()
+            } else {
+                timer = later()
+                if (immediate) {
+                    func.apply(this, params)
+                } else {
+                    context = this
+                    args = params
+                }
+            }
+        }
+    }
+    let f = function (e) {
+        console.log('按钮被点击了', count++, e)
+    }
+
+    /**
+     * 每隔 wait 执行一次
+     * @param func
+     * @param wait
+     * @param options
+     * @return function
+     */
+    function throttle(func, wait, options = {}) {
+        let timer = null
+        let context, args
+        let result
+        let previous = 0
+        let later = function (){
+            previous = options.leading === false ? 0 : Date.now()
+            timer = null
+            result = func.apply(context, args)
+            if (!timer) context = args = null
+        }
+        return function (...params) {
+            let now = Date.now()
+            if (!previous && options.leading === false) {
+                previous = now
+            }
+            let remaining = wait - (now - previous)
+            context = this
+            args = params
+            if (remaining <= 0 || remaining > wait) {
+                if (timer) clearTimeout(timer)
+                previous = now
+                result = func.apply(context, params)
+                if (!timer) context = args = null
+            } else if (!timer && options.trailing !== false) {
+                timer = setTimeout(later, remaining)
+            }
+        }
+    }
+    // leading: false,
+    btn.onclick = throttle(f, 500, {trailing: false})
+</script>
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<script>
+    let str1 = 'BBC ABCDAB BABCDABDABDE'
+    let str2 = 'ABCDABD'
+
+    console.log(kmpSearch(str1, str2, kmpNext(str2)))
+
+    function kmpSearch(s1, s2, next) {
+        for (let i = 0, j = 0; i < s1.length; i++) {
+            // 二者相等 下标后移
+            if (s1[i] === s2[j]) {
+                j++
+            } else {
+                // 不相等,检查部分匹配表
+                while (j > 0 && s1[i] !== s2[j]) {
+                    j = next[j - 1]
+                }
+            }
+            if (j === s2.length) {
+                return i - j + 1
+            }
+        }
+        return -1
+    }
+
+    // 获取子串的部分匹配表
+    function kmpNext(dest) {
+        let next = [0] // 如果字符串是长度为1 部分匹配值就是0
+        for (let i = 1, j = 0; i < dest.length; i++) {
+            if (dest[i] === dest[j]) {
+                j++
+            } else {
+                // 从 next[j - 1]获取新的j 取部分匹配表前一个
+                while (dest[i] !== dest[j] && j > 0) {
+                    j = next[j-1]
+                }
+            }
+            next[i] = j
+        }
+        return next
+    }
+
+    // console.log(kmpNext('AAABCBBBBBABAB'))
+</script>
+</body>
+</html>

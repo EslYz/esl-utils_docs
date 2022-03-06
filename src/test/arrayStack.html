@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>数组模拟栈结构</title>
+</head>
+<body>
+<div>
+    <input id="input" type="text">
+    <button id="btn">执行</button>
+
+</div>
+<script>
+    document.getElementById('btn').addEventListener('click', function () {
+        let input = document.getElementById('input')
+        let v = input.value
+    })
+
+    class ArrayStack{
+        constructor(maxSize) {
+            this.maxSize = maxSize
+            this.top = -1
+            this.stack = []
+        }
+        isFull() {
+            return this.top === this.maxSize-1
+        }
+        isEmpty() {
+            return this.top === -1
+        }
+        push(value) {
+            if (this.isFull()) {
+                console.log('栈满了')
+                return
+            }
+            this.top++
+            this.stack[this.top] = value
+        }
+        pop() {
+            if (this.isEmpty()) return null
+            let v = this.stack.pop()
+            this.top--
+            return v
+        }
+        // 遍历
+        list() {
+            if (this.isEmpty()) return
+            for (let i = this.top; i >= 0; i--) {
+                console.log(this.stack[i])
+            }
+        }
+    }
+
+    let stack = new ArrayStack(10)
+    stack.push(1)
+    stack.push(2)
+    stack.push(3)
+    stack.push(4)
+    stack.push(5)
+    // stack.list()
+    console.log(stack.pop())
+    console.log('***')
+    stack.list()
+
+</script>
+</body>
+</html>

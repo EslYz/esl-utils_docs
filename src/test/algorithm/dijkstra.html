@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>迪杰斯特拉算法实现</title>
+</head>
+<body>
+<h1>计算图中某一个顶点到其他顶点的最短路径</h1>
+<script>
+    class Graph{
+        constructor(vertex, matrix) {
+            this.vertex = vertex// 存放顶点的数组
+            this.matrix = matrix // 邻接矩阵
+            this.vv = null
+        }
+        showGraph() {
+            console.log(this.matrix)
+        }
+
+        /**
+         * 迪杰斯特拉算法实现
+         * @param index 触发顶点的下标
+         */
+        dsj(index) {
+            this.vv = new VisitedVertex(this.vertex.length, index)
+            this.update(index) // 更新index 顶点到周围顶点的距离和前驱顶点
+
+            for (let j = 1; j < this.vertex.length; j++) {
+                index = this.vv.updateArr() // 选择并返回新的访问顶点
+                this.update(index)
+            }
+
+            console.log(this.vv.already_arr)
+            console.log(this.vv.pre_visited)
+            console.log(this.vv.dis)
+            let dis = this.vv.dis
+            let count = 0
+            for (let d of dis) {
+                console.log(`${this.vertex[count]}(${d === 65536 ? 'N' : d})`)
+                count++
+            }
+        }
+
+        /**
+         * 更新index下标顶点到周围顶点的距离和周围顶点的前驱节点
+         * @param index
+         */
+        update(index) {
+            let len = 0
+            // 遍历邻接矩阵第index行 获取index节点到其他 可连通 节点的路径
+            for (let j = 0; j < this.matrix[index].length; j++) {
+                // len 是 触发顶点 到index顶点的距离 + 从index顶点到j顶点的距离的 和
+                len = this.vv.getDis(index) + this.matrix[index][j]
+                // index行 j 对应的顶点没有被访问过
+                // 且 len 小于出发顶点 到 j 顶点的距离， 保存最短距离
+                if (!this.vv.in(j) && len < this.vv.getDis(j)) {
+                    // 更新 j 顶点的前驱顶点为 index顶点
+                    this.vv.updatePre(j, index)
+                    // 更新触发顶点到 j 顶点的距离
+                    this.vv.updateDis(j, len)
+                }
+            }
+        }
+    }
+
+    class VisitedVertex{
+        /**
+         *
+         * @param len 顶点的个数
+         * @param index 触发顶点对应的下标
+         */
+        constructor(len, index) {
+            // 记录各个顶点是否已经访问过  1 访问过， 0 未访问 会动态更新
+            this.already_arr = []
+            // 每个下标对应的值为前一个顶点的下标，会动态更新
+            this.pre_visited = []
+            // 记录触发顶点到其他所有顶点的距离，比如 G为触发顶点，就会记录G到其他顶点的距离，会动态更新，求得最短距离会存放到dis
+            this.dis = []
+            for (let i = 0; i < len; i++) {
+                this.already_arr[i] = 0
+                this.pre_visited[i] = 0
+                this.dis[i] = 65535
+                if (i === index) {
+                    // 触发顶点 到自己的访问距离为0
+                    this.dis[i] = 0
+                    this.already_arr[i] = 1 // 设置触发顶点被访问过
+                }
+            }
+        }
+
+        /**
+         * 判断index顶点是否被访问
+         * @param index
+         * @return {boolean}
+         */
+        in(index) {
+            return this.already_arr[index] === 1
+        }
+
+        /**
+         * 更新出发顶点到 index 节点的距离
+         * @param index
+         * @param len
+         */
+        updateDis(index, len) {
+            this.dis[index] = len
+        }
+
+        /**
+         * 更新pre顶点的前驱为index对应的节点
+         * @param pre
+         * @param index
+         */
+        updatePre(pre, index) {
+            this.pre_visited[pre] = index
+        }
+
+        /**
+         * 返回出发顶点到index顶点的距离
+         * @param index
+         */
+        getDis(index) {
+            return this.dis[index]
+        }
+
+        /**
+         * 继续选择并返回新的访问顶点，比如这里的G 访问完后，就是A作为新的访问顶点 不是出发顶点
+         */
+        updateArr(){
+            let min = 65535, index = 0
+            for (let i = 0; i < this.already_arr.length; i++) {
+                if (this.already_arr[i] === 0 && this.dis[i] < min) {
+                    min = this.dis[i]
+                    index = i
+                }
+            }
+            // 更新index 北方问过
+            this.already_arr[index] = 1
+            return index
+        }
+    }
+
+    let vertex = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+    // 邻接矩阵
+    let matrix = []
+    let N = 65535//表示不可连接
+    matrix[0] = [N, 5, 7, N, N, N, 2]
+    matrix[1] = [5, N, N, 9, N, N, 3]
+    matrix[2] = [7, N, N, N, 8, N, N]
+    matrix[3] = [N, 9, N, N, N, 4, N]
+    matrix[4] = [N, N, 8, N, N, 5, 4]
+    matrix[5] = [N, N, N, 4, 5, N, 6]
+    matrix[6] = [2, 3, N, N, 4, 6, N]
+
+    let graph = new Graph(vertex, matrix)
+    graph.dsj(6)
+    graph.showGraph()
+
+
+</script>
+</body>
+</html>

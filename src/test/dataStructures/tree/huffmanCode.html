@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>哈夫曼编码</title>
+</head>
+<body>
+<script>
+    class Node {
+        constructor(data, weight) {
+            this.data = data // 存放ASSIC码
+            this.weight = weight // 字符出现的次数
+            this.left = null
+            this.right = null
+        }
+        preOrder() {
+            console.log(this)
+            if (this.left !== null) {
+                this.left.preOrder()
+            }
+            if (this.right !== null) {
+                this.right.preOrder()
+            }
+        }
+        toString(){
+            return `[Node data = ${this.data}，weight = ${this.weight}]`
+        }
+    }
+    class HuffmanCode {
+        constructor(str) {
+            this.contentList = []
+            for (let i = 0; i < str.length; i++) {
+                this.contentList.push(str[i])
+            }
+            let nodes = this.getNodes(this.contentList)
+            this.root = this.creatHuffmanTree(nodes)
+            this.huffmanCodeMap = new Map()
+            this.getCodes()
+        }
+        getNodes(contentList) {
+             // 存储每个byte 出现的次数
+             let nodes = []
+             let map = new Map()
+             for (let b of contentList) {
+                 if (map.has(b)) {
+                     map.set(b, map.get(b) + 1)
+                 } else {
+                     map.set(b, 1)
+                 }
+             }
+             // console.log(map)
+             map.forEach((value, key, map) => {
+                 nodes.push(new Node(key, value))
+             })
+             return nodes
+        }
+        creatHuffmanTree(list) {
+             list.sort(this.compare)
+             while (list.length > 1) {
+                 // 如果排序是从大到小排序 list.pop()
+                 let left = list.shift() // 取出前两个数字
+                 let right = list.shift()
+                 let parent = new Node(undefined,left.weight + right.weight)
+                 parent.left = left
+                 parent.right = right
+                 list.push(parent)
+                 list.sort(this.compare)
+             }
+             return list[0]
+         }
+
+        zip() {
+            return this._zip(this.contentList, this.huffmanCodeMap)
+        }
+        /**
+         * @param nodes 原始的字符串对应的字符串数组
+         * @param huffmanCodeMap 生成的HuffmanCode
+         * @return [byte,byte]
+         */
+         _zip(nodes, huffmanCodeMap){
+            let result = []
+            let sb = ''
+            for (let node of nodes) {
+                sb += huffmanCodeMap.get(node)
+            }
+            // 统计返回的
+            let len = (sb.length + 7) / 8
+            // if (sb.length % 8 === 0) {
+            //     len = sb.length / 8
+            // } else {
+            //     len = sb.length / 8 + 1
+            // }
+            let index = 0
+            for (let i = 0; i < sb.length; i += 8) {
+                let b
+                // 每8位对应一个byte
+                if (i + 8 > sb.length) { // 不够8位
+                    b = sb.substring(i)
+                } else {
+                    b = sb.substring(i, i+8)
+                }
+                console.log(`b = ${b} , parseInt = ${parseInt(b, 2)}`)
+                result[index++] = parseInt(b, 2)
+            }
+            return result
+         }
+
+         // byte 转 二进制的字符串
+         _byteToBitString(b) {
+             let temp = parseInt(Number(b), 2)
+             console.log(temp)
+         }
+
+         _unzip(bytes) {}
+
+        getCodes() {
+            this._getCodes(this.root, '', '')
+        }
+        /**
+         * 得到将传入节点的所有叶子节点的哈夫曼编码，并放到 map中
+         * @param node
+         * @param code 左子节点是 0  右子节点是1
+         * @param sb 用于拼接路径
+         */
+        _getCodes(node, code, path) {
+            let temp = path
+            temp = temp + code
+            if (node !== null) {
+                if (!node.data) {
+                    this._getCodes(node.left, '0', temp)
+                    this._getCodes(node.right, '1', temp)
+                } else {
+                    // 是叶子节点
+                    this.huffmanCodeMap.set(node.data, temp)
+                }
+            }
+         }
+
+         preOrder() {
+            if (this.root) {
+                this.root.preOrder()
+            }
+         }
+        // 从小到大排序
+        compare(node1, node2) {
+            return node1.weight - node2.weight
+        }
+    }
+    let str = 'i like like like java do you like a java'
+    let huffmanCode = new HuffmanCode(str)
+    huffmanCode.preOrder()
+    let zipCode = huffmanCode.zip()
+    console.log(zipCode)
+
+</script>
+</body>
+</html>

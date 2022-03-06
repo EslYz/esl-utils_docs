@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>贪心算法</title>
+</head>
+<body>
+
+<script>
+    let broadcasts = new Map()
+    let set1 = new Set()
+    set1.add('北京')
+    set1.add('上海')
+    set1.add('天津')
+
+    let set2 = new Set()
+    set2.add('广州')
+    set2.add('北京')
+    set2.add('深圳')
+
+    let set3 = new Set()
+    set3.add('成都')
+    set3.add('上海')
+    set3.add('杭州')
+
+    let set4 = new Set()
+    set4.add('上海')
+    set4.add('天津')
+
+    let set5 = new Set()
+    set5.add('杭州')
+    set5.add('大连')
+
+    broadcasts.set('k1', set1)
+    broadcasts.set('k2', set2)
+    broadcasts.set('k3', set3)
+    broadcasts.set('k4', set4)
+    broadcasts.set('k5', set5)
+
+    let allAreas = new Set()
+    allAreas.add('北京')
+    allAreas.add('上海')
+    allAreas.add('天津')
+    allAreas.add('广州')
+    allAreas.add('深圳')
+    allAreas.add('成都')
+    allAreas.add('杭州')
+    allAreas.add('大连')
+
+    let selects = []
+    // 在遍历过程中，存放遍历过程中的电台 覆盖的地区和当前还没有覆盖的地区的交集
+    let tempSet = new Set()
+    let maxKey = null // 一次遍历过程中，能够覆盖最大 未覆盖的地区对应的电台的key
+    // while (allAreas.size > 0) {
+    //     broadcasts.forEach((v, k, map) => {
+    //         for (let t of v) {
+    //             tempSet.add(t)
+    //         }
+    //         // 求 tempSet和 allAreas 集合的交集，交集会赋给 tempSet
+    //         tempSet = new Set([...allAreas].filter(x => tempSet.has(x))) // 求交集
+    //         // 如果 tempSet 包含的未覆盖地区的数量，比maxKey指向的集合的地区还多
+    //         if (tempSet.size > 0 && (maxKey === null || tempSet.size > v.length)) { // 每次都选择最优的
+    //             maxKey = k
+    //         }
+    //         if (maxKey !== null) {
+    //             selects.push(maxKey)
+    //             allAreas = new Set([...allAreas].filter(x => !broadcasts.get(maxKey).has(x)))
+    //             maxKey = null
+    //         }
+    //     })
+    // }
+    while (allAreas.size !== 0) { // allAreas 不为空，说明还有每覆盖到的地区
+        maxKey = null
+        broadcasts.forEach((v, k, map) => {
+            tempSet.clear()
+            for (let t of v) {
+                tempSet.add(t)
+            }
+            // 求 tempSet和 allAreas 集合的交集，交集会赋给 tempSet
+            tempSet = new Set([...allAreas].filter(x => tempSet.has(x))) // 求交集
+            // 如果 tempSet 包含的未覆盖地区的数量，比maxKey指向的集合的地区还多
+            if (tempSet.size > 0 && (maxKey === null || tempSet.size > v.length)) { // 每次都选择最优的
+                maxKey = k
+            }
+        })
+        console.log('center max key = ', maxKey, '  tempset = ', tempSet)
+        if (maxKey !== null) {
+            selects.push(maxKey)
+            // 差集
+            allAreas = new Set([...allAreas].filter(x => !broadcasts.get(maxKey).has(x)))
+            console.log('after  all areas = ' ,allAreas)
+        }
+    }
+    console.log(selects)
+
+
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>二分查找的非递归实现</title>
+</head>
+<body>
+<script>
+
+    /**
+     * 非递归二分查找
+     * @param arr 递增序列
+     * @param target
+     */
+    function binarySearchNoRecursion(arr, target) {
+        let left = 0
+        let right =arr.length - 1
+        while(left <= right) {
+            let mid = Math.floor((left + right) / 2)
+            if (arr[mid] === target) {
+                return mid
+            } else if (arr[mid] > target) {
+                right = mid - 1
+            } else {
+                left = mid + 1
+            }
+        }
+        return -1
+    }
+</script>
+</body>
+</html>

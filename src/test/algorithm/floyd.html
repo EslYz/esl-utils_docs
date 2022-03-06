@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>弗洛伊德算法求最短路径</title>
+</head>
+<body>
+<h1>各个顶点到其他顶点的最短路径</h1>
+<script>
+    class Graph {
+        /**
+         *
+         * @param len 大小
+         * @param matrix 邻接矩阵
+         * @param vertex 顶点
+         */
+        constructor(len, matrix, vertex) {
+            this.vertex = vertex
+            this.dis = matrix // 二维数组存 从各个顶点触发 到其他顶点的距离
+            this.pre = [] // 到达目标顶点的前驱顶点的下标
+            for (let i = 0; i < len; i++) {
+                this.pre[i] = []
+                for (let j = 0; j < len; j++) {
+                    this.pre[i][j] = i
+                }
+            }
+        }
+
+        floyd() {
+            let len = 0 // 保存距离的临时变量
+            let dis = this.dis
+            let disCount = dis.length
+            for (let k = 0; k < disCount; k++) { // 经过 k 中间节点
+                for (let i = 0; i < disCount; i++) { // 从 i顶点开始出发
+                    for (let j = 0; j < disCount; j++) { // 到达终点 k
+                        // 从i 出发 经过 k  到达 j 的距离
+                        len = dis[i][k] + dis[k][j]
+                        if (len < dis[i][j]) { // 如果 i - j 直接连接小于 经过中点 k 的距离
+                            dis[i][j] = len
+                            this.pre[i][j] = this.pre[k][j] // 更新 前驱节点
+                        }
+                    }
+                }
+            }
+        }
+
+        show() {
+            console.log('pre = ', this.pre)
+            console.log('dis = ', this.dis)
+        }
+
+    }
+    let vertex = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+    let matrix = []
+    let N = 65535//表示不可连接
+    matrix[0] = [0, 5, 7, N, N, N, 2]
+    matrix[1] = [5, 0, N, 9, N, N, 3]
+    matrix[2] = [7, N, 0, N, 8, N, N]
+    matrix[3] = [N, 9, N, 0, N, 4, N]
+    matrix[4] = [N, N, 8, N, 0, 5, 4]
+    matrix[5] = [N, N, N, 4, 5, 0, 6]
+    matrix[6] = [2, 3, N, N, 4, 6, 0]
+
+    let graph = new Graph(vertex.length, matrix, vertex)
+    graph.floyd()
+    graph.show()
+
+</script>
+</body>
+</html>

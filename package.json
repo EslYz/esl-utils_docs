@@ -1,6 +1,6 @@
 {
-  "name": "esl-utils_docs",
-  "main": "dist/esl-utils.js",
+  "name": "eweb",
+  "main": "dist/eweb.js",
   "keywords": [
     "eslyz",
     "js",
@@ -46,7 +46,7 @@
     "vuepress": "^1.9.7"
   },
   "eslintConfig": {
-    "root": true,
+    "root": false,
     "env": {
       "node": true
     },
@@ -57,7 +57,11 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {
+      "no-unused-vars": "off",
+      "no-unused-expressions": "off",
+      "no-unused-labels": "off"
+    }
   },
   "browserslist": [
     "> 1%",

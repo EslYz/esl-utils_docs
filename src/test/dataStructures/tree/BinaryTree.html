@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>二叉树</title>
+</head>
+<body>
+<script>
+    class BinaryTree{
+        constructor() {
+            this.root = null
+        }
+        setRoot(root) {
+            this.root = root
+        }
+        preOrder2() {
+            if (this.root === null) {
+                return
+            }
+            let res = []
+            let q = [this.root]
+            while (q.length) {
+                let node = q.shift()
+                res.push(node.no)
+                if (node.left !== null) q.push(node.left)
+                if (node.right !== null) q.push(node.right)
+            }
+            console.log(res)
+        }
+
+        // 递归遍历
+        preOrder(){
+            if (this.root) {
+                this.root.preOrder()
+            }
+        }
+        // 迭代遍历
+        infixOrder2() {
+            if (this.root === null) return
+            let stack = []
+            let res = []
+            let cur = this.root
+            while (cur !== null || stack.length) {
+                if (cur !== null) {
+                    stack.push(cur)
+                    cur = cur.left
+                } else {
+                    cur = stack.pop()
+                    res.push(cur.no)
+                    cur = cur.right
+                }
+            }
+            console.log(res)
+        }
+
+        infixOrder() {
+            if (this.root) {
+                this.root.infixOrder()
+            }
+        }
+        postOrder2() {
+            if (this.root === null) return
+            let stack = []
+            let res = []
+            stack.push(this.root)
+            while (stack.length) {
+                let node = stack.pop()
+                res.push(node.no)
+                if (node.left) stack.push(node.left)
+                if (node.right) stack.push(node.right)
+            }
+            console.log(res.reverse())
+        }
+        postOrder() {
+            if (this.root) {
+                this.root.postOrder()
+            }
+        }
+
+        preOrderSearch(no) {
+            if (this.root === null) {
+                return null
+            }
+            return this.root.preOrderSearch(no)
+        }
+        infixOrderSearch(no) {
+            if (this.root === null) {
+                return null
+            }
+            return this.root.infixOrderSearch(no)
+        }
+        postOrderSearch(no) {
+            if (this.root === null) {
+                return null
+            }
+            return this.root.postOrderSearch(no)
+        }
+
+        delNode(no) {
+            if (this.root !== null) {
+                if (this.root.no === no) {
+                    this.root = null
+                    return true
+                } else {
+                    return this.root.delNode(no)
+                }
+            }
+            return false
+        }
+    }
+    class Node{
+        constructor(no, name) {
+            this.name = name
+            this.no = no
+            this.left = null
+            this.right = null
+        }
+        toString() {
+            return `Node [no = ${this.no}, name = ${this.name}]`
+        }
+        // 前序遍历
+        preOrder() {
+            console.log(this.toString())
+            if (this.left !== null) {
+                this.left.preOrder()
+            }
+            if (this.right !== null) {
+                this.right.preOrder()
+            }
+        }
+        infixOrder() {
+            if (this.left !== null) {
+                this.left.infixOrder()
+            }
+            console.log(this.toString())
+            if (this.right !== null) {
+                this.right.infixOrder()
+            }
+        }
+        postOrder() {
+            if (this.left !== null) {
+                this.left.postOrder()
+            }
+            if (this.right !== null) {
+                this.right.postOrder()
+            }
+            console.log(this.toString())
+        }
+
+        preOrderSearch(no) {
+            if (this.no === no) {
+                return this
+            }
+            let res = null
+            if (this.left !== null) {
+                res = this.left.preOrderSearch(no)
+            }
+            if (res !== null) return res
+
+            if (this.right !== null) {
+                res = this.right.preOrderSearch(no)
+            }
+            return res
+        }
+        infixOrderSearch(no) {
+            let res = null
+            if (this.left !== null) {
+                res = this.left.preOrderSearch(no)
+            }
+            if (res !== null) return res
+
+            if (this.no === no) {
+                return this
+            }
+
+            if (this.right !== null) {
+                res = this.right.preOrderSearch(no)
+            }
+            return res
+        }
+        postOrderSearch(no) {
+            let res = null
+            if (this.left !== null) {
+                res = this.left.preOrderSearch(no)
+            }
+            if (res !== null) return res
+
+            if (this.right !== null) {
+                res = this.right.preOrderSearch(no)
+            }
+            if (res !== null) return res
+
+            if (this.no === no) {
+                return this
+            }
+        }
+
+        delNode(no) {
+            if (this.left !== null && this.left.no === no) {
+                this.left = null
+                return true
+            }
+            if (this.right !== null && this.right.no === no) {
+                this.right = null
+                return true
+            }
+            let r = false
+            if (this.left !== null) {
+                r = this.left.delNode(no)
+            }
+            if (r) return r
+            if (this.right !== null) {
+                return this.right.delNode(no)
+            }
+            return false
+        }
+    }
+
+
+    let tree = new BinaryTree()
+    let root = new Node(1, '李青')
+    let node2 = new Node(2, '菲兹')
+    let node3 = new Node(3, '易')
+    let node4 = new Node(4, 'zed')
+    let node5 = new Node(5, 'vn')
+    tree.setRoot(root)
+    root.left = node2
+    root.right = node3
+    node3.left= node5
+    node3.right = node4
+
+    // tree.preOrder()
+    // tree.preOrder2()
+    // console.log('***********************************')
+    // tree.infixOrder()
+    // tree.infixOrder2()
+    // console.log('***********************************')
+    tree.postOrder()
+    tree.postOrder2()
+
+
+
+    // console.log(tree.delNode(5))
+    // tree.preOrder()
+
+
+
+
+</script>
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>hastTable 测试</title>
+</head>
+<body>
+<div>
+    <input id="id" type="number">
+    <input id="name" type="text">
+    <button id="list">显示</button>
+    <button id="add">添加雇员</button>
+    <button id="update">根据id更新name</button>
+    <button id="findById">根据id查找</button>
+    <button id="remove">根据id删除</button>
+</div>
+<script>
+    class Emp{
+        constructor(id, name) {
+            this.id = id
+            this.name = name
+            this.next = null
+        }
+    }
+    class EmpLinkedList {
+        constructor() {
+            this.head = null
+        }
+        // 添加到链表最后，id自增
+        add(node) {
+            if (this.head === null) {
+                this.head = node
+                return
+            }
+            let temp = this.head
+            while (temp.next) {
+                temp = temp.next
+            }
+            temp.next = node
+        }
+        list(i) {
+            if (this.head === null) {
+                console.log(`第 ${i + 1} 链表为空`);
+                return
+            }
+            let temp = this.head
+            while (temp) {
+                console.log(`第 ${i+1}条链表的信息为：id = ${temp.id}, name = ${temp.name}`)
+                temp = temp.next
+            }
+        }
+        findById(id) {
+            if (this.head === null) {
+                return null
+            }
+            let temp = this.head
+            while (temp) {
+                if (temp.id === id) {
+                    return temp
+                }
+                temp = temp.next
+            }
+            return null
+        }
+        update(newNode) {
+            let node = this.findById(newNode.id)
+            if (node !== null) {
+                node.name = newNode.name
+            }
+        }
+        remove(id) {
+            if (this.head === null) return false
+            if (this.head.id === id) {
+                this.head = null
+                return true
+            }
+            let temp = this.head
+            let pre = temp
+            while (temp) {
+                if (temp.id === id) {
+                    break
+                }
+                pre = temp
+                temp = temp.next
+            }
+            pre.next = temp.next
+            return true
+        }
+    }
+    class HashTable{
+        constructor(size) {
+            this.size = size
+            this.empLinkedListArray = []
+            for (let i = 0; i < size; i++) {
+                this.empLinkedListArray.push(new EmpLinkedList())
+            }
+        }
+        add(empNode) {
+            // 根据id 决定放在哪个链表
+            let empLinkedListNO = this._hash(empNode.id)
+            this.empLinkedListArray[empLinkedListNO].add(empNode)
+        }
+        list() {
+            for (let i = 0; i < this.empLinkedListArray.length; i++) {
+                this.empLinkedListArray[i].list(i)
+            }
+        }
+        findById(id) {
+            let linkedNo = this._hash(id)
+            return this.empLinkedListArray[linkedNo].findById(id)
+        }
+        update(node){
+            let linkedNo = this._hash(node.id)
+            return this.empLinkedListArray[linkedNo].update(node)
+        }
+        remove(id) {
+            let linkedNo = this._hash(id)
+            return this.empLinkedListArray[linkedNo].remove(id)
+        }
+        // 散列函数
+        _hash(id) {
+            // 简单版
+            return id % this.size
+        }
+    }
+    let id = document.querySelector('#id')
+    let name = document.querySelector('#name')
+    let add = document.querySelector('#add')
+    let list = document.querySelector('#list')
+    let findById = document.querySelector('#findById')
+    let removeById = document.querySelector('#remove')
+    let updateById = document.querySelector('#update')
+
+    let hashTable = new HashTable(7)
+
+    add.onclick = function () {
+        let node = new Emp(id.value, name.value)
+        hashTable.add(node)
+    }
+    list.onclick = function () {
+        hashTable.list()
+    }
+    findById.onclick = function () {
+        let node = hashTable.findById(id.value)
+        if (node instanceof Emp) {
+            console.log(node)
+        } else {
+            console.error('没有该雇员')
+        }
+    }
+    updateById.onclick = function () {
+        let node = new Emp(id.value, name.value)
+        hashTable.update(node)
+    }
+    removeById.onclick = function () {
+        let node = hashTable.remove(id.value)
+        if (node) {
+            console.log('删除成功')
+        } else {
+            console.log('删除失败')
+        }
+    }
+</script>
+</body>
+</html>

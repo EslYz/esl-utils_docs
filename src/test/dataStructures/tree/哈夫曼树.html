@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>哈夫曼树</title>
+</head>
+<body>
+<script>
+    class Node{
+        constructor(val) {
+            this.val = val
+            this.left = null
+            this.right = null
+        }
+        preOrder(){
+            console.log(this.val)
+            if (this.left !== null) {
+                this.left.preOrder()
+            }
+            if (this.right !== null) {
+                this.right.preOrder()
+            }
+        }
+        toString() {
+            return `Node [value = ${this.val}]`
+        }
+    }
+    class HuffmanTree{
+        constructor(arr) {
+            this.arr = []
+            this.huffmanRoot = this.createHuffmanTree(arr)
+
+        }
+        compareTo(o1, o2) {
+            // 从小到达排序 this.val - o.val
+            // 从大到小排序 -(this.val - o.val)
+            return o1.val - o2.val
+        }
+        preOrder() {
+            if (this.huffmanRoot !== null) {
+                this.huffmanRoot.preOrder()
+            } else {
+                console.error('空树。。')
+            }
+        }
+
+        /**
+         * 1. 从小到大进行排序，每个数据都是一个节点，每个节点可以看成是一颗最简单的二叉树
+         * 2. 取出根节点权值最小的两颗二叉树
+         * 3. 组成一颗新的二叉树，该新的二叉树的根节点的权值是前面两颗二叉树根节点权值的和
+         * 4. 再将这颗新的二叉树，以根节点的权值大小再次排序，不断重复 1-2-3-4步骤，直到数列中，所有的数据都被处理
+         * @param arr
+         * @returns {Node}
+         */
+        createHuffmanTree(arr) {
+            arr = arr.sort((a, b) => a - b)
+            let list = []
+            for (let i = 0; i < arr.length; i++) {
+                list.push(new Node(arr[i]))
+            }
+            while (list.length > 1) {
+                // 如果排序是从大到小排序 list.pop()
+                let left = list.shift() // 取出前两个数字
+                let right = list.shift()
+                let parent = new Node(left.val + right.val)
+                parent.left = left
+                parent.right = right
+                list.push(parent)
+                list.sort(this.compareTo)
+            }
+            return list[0]
+        }
+    }
+    let arr = [13, 7, 8, 3, 29, 6, 1]
+    let tree = new HuffmanTree(arr)
+    tree.preOrder()
+</script>
+</body>
+</html>

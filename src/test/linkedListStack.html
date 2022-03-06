@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>链表模拟栈</title>
+</head>
+<body>
+<div>
+    <input id="value" type="text">
+
+    <button id="pop">pop</button>
+    <button id="push">push</button>
+</div>
+<script>
+
+    class Node {
+        constructor(val) {
+            this.val = val
+            this.next = null
+        }
+    }
+    class LinkedList {
+        constructor() {
+            this.head = null
+        }
+        add(node){
+            if (this.head === null) {
+                this.head = node
+                return
+            }
+            let t = this.head
+            while (t.next) {
+                t = t.next
+            }
+            t.next = node
+        }
+        pop() {
+            if (this.head == null) return null
+            let t = this.head
+            let pre = t
+            while (t.next) {
+                pre = t
+                t = t.next
+            }
+            // t 是最后一个节点
+            pre.next = null
+            return t.val
+        }
+        _backward(head) {
+            if (head === null) return
+            this._backward(head.next)
+            console.log(head.val)
+        }
+        // 遍历
+        list() {
+            this._backward(this.head)
+        }
+
+    }
+    class LinkedStack{
+        constructor(maxSize) {
+            this.maxSize = maxSize
+            this.top = -1
+            this.stack = new LinkedList()
+        }
+        isFull() {
+            return this.top === this.maxSize
+        }
+        isEmpty() {
+            return this.top === -1
+        }
+        push(val) {
+            if (this.isFull()) return
+            let node = new Node(val)
+            this.top++
+            this.stack.add(node)
+        }
+        pop(){
+            if(this.isEmpty()) return
+            let v = this.stack.pop()
+            this.top--
+            return v
+        }
+        list() {
+            this.stack.list()
+        }
+    }
+    let linkedStack = new LinkedStack(10)
+
+    document.getElementById('push').addEventListener('click', function () {
+        let v = document.getElementById('value').value
+        if (!v) return
+        linkedStack.push(v)
+        linkedStack.list()
+    })
+    document.getElementById('pop').addEventListener('click', function () {
+        console.log(linkedStack.pop())
+    })
+
+
+
+</script>
+</body>
+</html>

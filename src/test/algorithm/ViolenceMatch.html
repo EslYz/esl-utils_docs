@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>暴力匹配字符串</title>
+</head>
+<body>
+<a target="_blank" href="https://www.cnblogs.com/ZuoAndFutureGirl/p/9028287.html">KMP算法详解</a>
+<script>
+    function violenceMatch(str1, str2) {
+        let s1Len = str1.length
+        let s2Len = str2.length
+        let i = 0 // i 指向 s1
+        let j = 0 // j 指向 s2
+        while (i < s1Len && j < s2Len) {
+            if (str1[i] === str2[j]) {
+                i++
+                j++
+            } else {
+                console.log(`匹配失败回溯前i = ${i}, j = ${j}`)
+                i = i -  (j - 1)
+                j = 0
+                console.log(`。。。匹配失败回溯后i = ${i}, j = ${j}`)
+            }
+        }
+        // 判断是否匹配成功
+        if (j === str2.length) {
+            return i - j
+        }
+        return -1
+    }
+
+    let str1 = 'ABC DE_FG'
+    let str2 = 'EFG'
+    console.log(violenceMatch(str1, str2))
+</script>
+</body>
+</html>

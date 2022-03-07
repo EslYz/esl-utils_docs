@@ -111,7 +111,7 @@
     }
 
     let input = document.querySelector('input')
-    let f = debounce(function (e) {
+    let f1 = debounce(function (e) {
         console.log(e.target.value)
     }, 500, false)
 
@@ -142,9 +142,92 @@
     // [a, b] = [b, a]
     // console.log(a, b)
 
-    let arr = [1,1,2,3,3,4]
-    let set = [...new Set(arr)]
+    // let arr = [1,1,2,3,3,4]
+    // let set = [...new Set(arr)]
     // console.log(set)
+
+
+    class Scheduler{
+        constructor(limit) {
+            this.limit = limit
+            this.queue = []
+            this.count = 0
+        }
+        add(time, order) {
+            const promiseCreator = () => new Promise(resolve =>  {
+                setTimeout(() => {
+                    console.log(order)
+                    resolve()
+                }, time)
+            })
+            this.queue.push(promiseCreator)
+        }
+        startTask() {
+            for (let i = 0; i < this.limit; i++) {
+                this.request()
+            }
+        }
+        request() {
+            if (!this.queue.length || this.count >= this.limit) return
+            this.count++
+            this.queue.shift()().then(() => {
+                this.count--
+                this.request()
+            })
+        }
+    }
+    const scheduler = new Scheduler(2)
+    let addTask = (time, order) => {
+        scheduler.add(time,order)
+    }
+    addTask(1000, 'a')
+    addTask(500, 'b')
+    addTask(300, 'c')
+    addTask(400, 'd')
+
+    // scheduler.startTask()
+
+    class CancelablePromise{
+        constructor() {
+            this.pendingPromise = null
+            this.reject = null
+        }
+        request(fn) {
+            if (this.pendingPromise) {
+                this.cancel('取消重复请求')
+            }
+            const promise = new Promise((_,reject) => this.reject = reject)
+            this.pendingPromise = Promise.race([fn(), promise])
+            return this.pendingPromise
+        }
+        cancel(reason){
+            this.reject(reason)
+            this.pendingPromise = null
+        }
+    }
+    function request(delay) {
+        return () => new Promise(resolve => {
+            setTimeout(() => {
+                resolve('成功')
+            }, delay)
+        })
+    }
+    const cancelablePromise = new CancelablePromise()
+    for (let i = 0; i < 5; i++) {
+        cancelablePromise.request(request(2000))
+        .then(res => console.log(res))
+        .catch(err => console.error(err))
+    }
+
+    var x = 1
+    function f(xx, y = function() {x = 3; console.log('y inner', x);}) {
+        console.log(xx)
+        // var x = 2
+        y()
+        console.log(xx)
+    }
+    f()
+    console.log(x)
 
 </script>
 </body>

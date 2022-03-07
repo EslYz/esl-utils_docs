@@ -48,9 +48,9 @@ module.exports = {
                     'algorithm/双指针技巧',
                     'algorithm/滑动窗口',
                     'algorithm/递归',
+                    'algorithm/linkedList/链表',
                     'algorithm/sort/排序',
-                    // 动态规划
-                    'algorithm/dynamicProgramming/dp01.md'
+                    'algorithm/dynamicProgramming/动态规划01'
                 ]
             },
             {

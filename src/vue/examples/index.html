@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>验证构建</title>
+    <script src="../dist/vue.js"></script>
+</head>
+<body>
+<div id="app">aaa</div>
+<script>
+    new Vue({
+        el: '#app',
+        template: '<div>{{name}}</div>',
+        data: {
+            name: 'abcd'
+        }
+    })
+</script>
+</body>
+</html>
